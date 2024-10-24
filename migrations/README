@@ -1,0 +1,19 @@
+
+##Flaskフォルダ構成
+
+| ファイル名 | 説明 |
+| ---- | ---- |
+| run.py | APIの起動ファイル |
+| api/config/ | DBなどの設定内容を記載。今回は使用はほぼない |
+| api/__init__.py | アプリケーションルートが記載されているファイルrun.pyから参照される |
+| api/detect.py | /image/のルートに対しての全体処理を記載。前処理⇒推論⇒後処理で記載される |
+| api/preparation.py | AI推論前前処理。detect.pyから参照される。 |
+| api/yolo_tflite.py | YOLOの推論ファイル。detect.pyから参照される。 |
+| api/paddleocr_ja.py | PaddleOCRの推論ファイル。detect.pyから参照される。 |
+| api/postprocess.py | AI推論後後処理。detect.pyから参照される。 |
+| api/best_float32.tflite | YOLOの推論モデルファイル |
+| api/data.yaml | YOLOの設定ファイル |
+| api/ppocr_onnx* | PaddleOCRでの推論に必要なソースファイルやモデルが格納される |
+| api/cvdrawtext* | PaddleOCRでの推論に必要な設定ファイルが格納される |
+
+
