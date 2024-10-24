@@ -53,7 +53,7 @@ mkdir work
 
 cd work
 
-git clone https://3ize.backlog.jp/git/TOTAR_OCR/backend.git
+git clone https://github.com/takuya-fukuda/ocr_api.git
 
 cd backend
 
