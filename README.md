@@ -154,3 +154,18 @@ paddle2onnx --model_dir ./inference/japan_PP-OCRv3_rec_infer \
     --save_file ./model/rec_model/japan_PP-OCRv3_rec_infer.onnx \
     --opset_version 11
 ```
+
+## ファインチューニングのデータセットサンプル
+
+ファイル名は、yaml ファイルに合わせること
+今回は./train_data/train_list.txt を作成
+
+画像名とラベルはタブスペース
+
+train_list.txt
+
+```
+./IMG_3093.jpg	1000
+./IMG_3096.jpg	500
+./IMG_3099.jpg	100
+```
