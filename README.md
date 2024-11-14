@@ -39,6 +39,8 @@ Ubuntu20.04.06 LTS
 以下 Ubuntu アプリ内で実行
 
 2.Python のインストール
+
+```
 sudo apt update
 
 sudo apt install software-properties-common
@@ -50,15 +52,21 @@ sudo apt update
 sudo apt install python3.10
 
 python3.10 --version
+```
 
 3.仮想環境の作成
+
+```
 python3.10 -m venv [your_env_name]
 
 cd [your_env_name]
 
 source bin/activate
+```
 
 4.git のクローンとライブラリインストール
+
+```
 mkdir work
 
 cd work
@@ -70,6 +78,7 @@ cd backend
 pip install -r requirements.txt
 
 python run.py
+```
 
 ## Flask フォルダ構成
 
