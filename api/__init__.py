@@ -1,7 +1,7 @@
 import json
 import base64
 import re
-from . import detect
+from . import ocr
 
 from flask import Blueprint, jsonify, request
 
@@ -15,4 +15,4 @@ def index():
 #YOLO実行関数
 @api.route('/image', methods=["POST"])
 def prepare():
-    return detect.detection(request)
+    return ocr.ocr_func(request)
