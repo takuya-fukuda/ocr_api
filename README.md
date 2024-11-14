@@ -93,8 +93,62 @@ git clone https://github.com/PaddlePaddle/PaddleOCR
 configs 配下にある YAML ファイルを編集
 ./config/rec/PP-OCRv3/multi_language/japan_PP-OCRv3_rec.yml
 
-事前学習済みモデルのダウンロード
+```
+#事前学習済みモデルのダウンロード
 https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_en/models_list_en.md
 
-YAML ファイルに下記追加
+#YAMLファイルに対象パラメータに下記追加(modelフォルダを作成して保存しておいた)
 pretrained_model: ./models/japan_PP-OCRv3_rec_train/best_accuracy
+
+#後は必要に応じてパラメータを編集。デフォでもいい。画像の拡張とかエポック数を調整
+epoch_num: 100
+
+- RecConAug:
+    prob: 0
+    ext_data_num: 0
+
+batch_size_per_card: 30
+```
+
+./tools/program.py の修正
+
+```
+修正前
+device = "gpu:{}".format(dist.ParallelEnv().dev_id) if use_gpu else "cpu"
+
+修正後
+device = paddle.get_device() if use_gpu else "cpu"
+```
+
+学習用コード
+
+```
+python tools/train.py -c configs/rec/PP-OCRv3/multi_language/japan_PP-OCRv3_rec.yml
+```
+
+学習後にモデルを保存
+
+```
+python tools/export_model.py -c configs/rec/PP-OCRv3/multi_language/japan_PP-OCRv3_rec.yml -o Global.pretrained_model=./output/v3_japan_mobile/latest.pdparams
+```
+
+下記に更新モデルが保存されているはずなので確認
+output\inference\japan_PP-OCRv3_rec_infer
+
+ONNX 変換用パッケージのインストール
+
+```
+pip install paddle2onnx
+```
+
+ONNX に変換
+
+```
+cd output
+
+paddle2onnx --model_dir ./inference/japan_PP-OCRv3_rec_infer \
+    --model_filename inference.pdmodel \
+    --params_filename inference.pdiparams \
+    --save_file ./model/rec_model/japan_PP-OCRv3_rec_infer.onnx \
+    --opset_version 11
+```
