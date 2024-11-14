@@ -2,6 +2,8 @@
 
 レシートの合計金額 OCR
 
+![OCR例](./image.jpg)
+
 ## 使用している AI モデル
 
 PaddleOCR の ONNX 変換モデル
