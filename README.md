@@ -8,6 +8,14 @@
 
 PaddleOCR の ONNX 変換モデル
 
+今回は ONNX-runtime と Python のみで推論していますが、
+普通に PaddelOCR パッケージでも ONNX 推論はできます。
+
+```
+ocr_ja = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads, use_onnx=True, det_model_dir=det_model, rec_model_dir=ja_rec_model, cls_model_dir=cls_model)
+ocr_result_ja = ocr_ja.ocr(img_path)
+```
+
 ## 環境
 
 python3.10.15
