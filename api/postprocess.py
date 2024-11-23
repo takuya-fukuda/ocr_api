@@ -34,16 +34,21 @@ def replace_word(text):
     text = text.replace(',', '')
     return text
 
-def extract_info_ja(dt_boxes, rec_res):
+def extract_info_ja(ocr_result):
     total_amount = None
     total_amount_bbox = None
     found_total_keyword = False
     found_partial_total_keyword = False
 
-    for item, bbox in zip(rec_res, dt_boxes):
-        item = replace_word(item[0])
+    # for item, bbox in zip(rec_res, dt_boxes):
+    #     item = replace_word(item[0])
+    #     item = zenkaku_to_hankaku(item)
+    #     bbox = bbox
+    for line in ocr_result[0]:
+        item = line[1][0]
+        item = replace_word(item)
         item = zenkaku_to_hankaku(item)
-        bbox = bbox
+        bbox = line[0]
 
         # 総合計の次の行の金額を抽出
         if found_total_keyword:

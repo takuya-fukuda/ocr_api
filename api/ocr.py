@@ -4,7 +4,7 @@ from pathlib import Path
 from flask import jsonify
 from .preparation import load_image, extension_split, heic_convert
 from .postprocess import result_custom, extract_info_ja, draw_pre, draw_info
-from .paddleocr_predict import OCRProcessor
+from paddleocr import PaddleOCR
 from .error import handle_error
 
 basedir = Path(__file__).parent.parent
@@ -51,14 +51,16 @@ def ocr_func(request):
     '''
     try:
         #使用するモデル定義
-        ja_model = './api/ppocr_onnx/model/rec_model/japan_PP-OCRv3_rec_infer.onnx'
-        ja_dict = './api/ppocr_onnx/ppocr/utils/dict/japan_dict.txt'
+        det_model = './api/model/det/ch_PP-OCRv3_det_infer.onnx'
+        rec_model = './api/model/rec/japan_PP-OCRv3_rec_infer.onnx'
+        cls_model = './api/model/cls/ch_ppocr_mobile_v2.0_cls_infer.onnx'
+        cpu_threads = 6
         
-        #クラス呼び出し
-        predict_ja = OCRProcessor(img_path, ja_model, ja_dict)
+        #クラス定義
+        ocr = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads, use_onnx=True, det_model_dir=det_model, rec_model_dir=rec_model, cls_model_dir=cls_model)  # 日本語OCR
 
         #推論
-        ja_boxes, ja_rec, ja_time = predict_ja.process_image()
+        ocr_result = ocr.ocr(img_path)
      
     except Exception as e:
         print(e)
@@ -69,7 +71,7 @@ def ocr_func(request):
     '''
     try:
         #抜きだしたい部分の抜き取り
-        result_ja = extract_info_ja(ja_boxes, ja_rec)
+        result_ja = extract_info_ja(ocr_result)
         print(result_ja['sum'])
 
         #BBOX部分の座標整理

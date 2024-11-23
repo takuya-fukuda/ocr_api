@@ -1,1 +1,0 @@
-from cvdrawtext.cvdrawtext import CvDrawText

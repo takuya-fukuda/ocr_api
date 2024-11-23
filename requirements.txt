@@ -9,3 +9,5 @@ scikit-image
 tensorflow
 onnxruntime
 pillow-heif
+paddlepaddle
+paddleocr
