@@ -92,17 +92,15 @@ python run.py
 
 ## Flask フォルダ構成
 
-| filename                 | description                                                                     |
-| ------------------------ | ------------------------------------------------------------------------------- |
-| run.py                   | API 起動用ファイル                                                              |
-| api/config\*             | DB などの設定ファイルが格納される                                               |
-| api/cvdrawtext\*         | PaddleOCR の設定ファイルなどが格納される今回は必要ない                          |
-| api/ppocr_onnx\*         | PaddleOCR のモデルファイルや推論スクリプトが格納される                          |
-| api/**init**.py          | アプリケーションルート設定ファイル                                              |
-| api/ocr.py               | /image/の全体処理が記載されたファイル。前処理 ⇒ 推論 ⇒ 後処理の原則に基づき記載 |
-| api/preparation.py       | 前処理ファイル。ocr.py から参照される                                           |
-| api/paddleocr_predict.py | PaddleOCR 推論ファイル。ocr.py から参照される                                   |
-| api/postprocess.py       | 後処理ファイル。ocr.py から参照される                                           |
+| filename           | description                                                                     |
+| ------------------ | ------------------------------------------------------------------------------- |
+| run.py             | API 起動用ファイル                                                              |
+| api/config/\*      | DB などの設定ファイルが格納される                                               |
+| api/model/\*       | PaddleOCR のモデルファイルが格納される                                          |
+| api/**init**.py    | アプリケーションルート設定ファイル                                              |
+| api/ocr.py         | /image/の全体処理が記載されたファイル。前処理 ⇒ 推論 ⇒ 後処理の原則に基づき記載 |
+| api/preparation.py | 前処理ファイル。ocr.py から参照される                                           |
+| api/postprocess.py | 後処理ファイル。ocr.py から参照される                                           |
 
 ## PaddleOCR のファインチューニング方法
 
