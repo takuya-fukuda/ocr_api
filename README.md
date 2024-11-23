@@ -8,8 +8,10 @@
 
 PaddleOCR の ONNX 変換モデル
 
-今回は ONNX-runtime と Python のみで推論していますが、
-普通に PaddelOCR パッケージでも ONNX 推論はできます。
+今回は PaddelOCR パッケージで ONNX 推論。
+環境依存したくない場合は、onnxruntime ブランチを参照。
+
+推論用コード
 
 ```
 ocr_ja = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads, use_onnx=True, det_model_dir=det_model, rec_model_dir=ja_rec_model, cls_model_dir=cls_model)
