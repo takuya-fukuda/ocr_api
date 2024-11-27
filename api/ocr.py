@@ -3,9 +3,12 @@ import shutil
 from pathlib import Path
 from flask import jsonify
 from .preparation import load_image, extension_split, heic_convert
-from .postprocess import result_custom, extract_info_ja, draw_pre, draw_info
-from paddleocr import PaddleOCR
+from .postprocess import result_custom, extract_info_ja, draw_pre, draw_info, search_total
+#from paddleocr import PaddleOCR
+from .visionapi_ocr import detect_text_with_api_key
 from .error import handle_error
+from dotenv import load_dotenv
+load_dotenv()
 
 basedir = Path(__file__).parent.parent
 
@@ -51,17 +54,20 @@ def ocr_func(request):
     '''
     try:
         #使用するモデル定義
-        det_model = './api/model/det/ch_PP-OCRv3_det_infer.onnx'
-        rec_model = './api/model/rec/japan_PP-OCRv3_rec_infer.onnx'
-        cls_model = './api/model/cls/ch_ppocr_mobile_v2.0_cls_infer.onnx'
-        cpu_threads = 6
+        # det_model = './api/model/det/ch_PP-OCRv3_det_infer.onnx'
+        # rec_model = './api/model/rec/japan_PP-OCRv3_rec_infer.onnx'
+        # cls_model = './api/model/cls/ch_ppocr_mobile_v2.0_cls_infer.onnx'
+        # cpu_threads = 6
         
         #クラス定義
-        ocr = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads, use_onnx=True, det_model_dir=det_model, rec_model_dir=rec_model, cls_model_dir=cls_model)  # 日本語OCR
+        #ocr = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads, use_onnx=True, det_model_dir=det_model, rec_model_dir=rec_model, cls_model_dir=cls_model)  # 日本語OCR
+
+        api_key=os.getenv("API_KEY")
 
         #推論
-        ocr_result = ocr.ocr(img_path)
-     
+        #ocr_result = ocr.ocr(img_path)
+        ocr_result = detect_text_with_api_key(api_key, img_path)
+
     except Exception as e:
         print(e)
         return handle_error("AI推論時の想定外のエラー", img_path, result_save_path), 400
@@ -71,19 +77,20 @@ def ocr_func(request):
     '''
     try:
         #抜きだしたい部分の抜き取り
-        result_ja = extract_info_ja(ocr_result)
-        print(result_ja['sum'])
+        #result_ja = extract_info_ja(ocr_result)
+        result = search_total(ocr_result)
+        print(result['sum'])
 
         #BBOX部分の座標整理
-        bbox_list = draw_pre(result_ja['total_amount_bbox'])
+        #bbox_list = draw_pre(result_ja['total_amount_bbox'])
 
         #bboxを引く処理
-        result_save_path = draw_info(img_path, bbox_list)
+        #result_save_path = draw_info(img_path, bbox_list)
 
         #結果を返す
-        result_data = result_custom(result_save_path, result_ja)
+        # result_data = result_custom(result)
 
-        return jsonify(result_data)
+        return jsonify(result)
 
     except Exception as e:
         print(e)

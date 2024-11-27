@@ -119,3 +119,40 @@ def result_custom(result_save_path, result_ja):
     
     return data
 
+#visionapi用後処理
+def search_total(ocr_result):
+    total_amount = None
+    found_total_keyword = False
+    found_partial_total_keyword = False
+
+    for item in ocr_result:
+        item = replace_word(item)
+        item = zenkaku_to_hankaku(item)
+
+        # 総合計の次の行の金額を抽出
+        if found_total_keyword:
+            total_match = re.search(r'(\d+)', item)
+            if total_match:
+                total_amount = total_match.group(1)
+                found_total_keyword = False  # 抽出が完了したらフラグをリセット
+                break
+
+        # 「合計」の次の行の金額を抽出
+        if found_partial_total_keyword and total_amount is None:
+            total_match = re.search(r'(\d+)', item)
+            if total_match:
+                total_amount = total_match.group(1)
+                found_partial_total_keyword = False  # 抽出が完了したらフラグをリセット
+                break
+
+        # 「総合計」という単語が見つかったら、次の行を金額としてマーク
+        if '総合計' in item:
+            found_total_keyword = True
+
+        # 「合計」が見つかり、まだ「総合計」がなかった場合にマーク
+        elif re.search(r'(合計|合言士|計)', item) and total_amount is None:
+            found_partial_total_keyword = True
+
+    return {
+        'sum': total_amount
+    }

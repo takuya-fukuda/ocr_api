@@ -21,3 +21,4 @@ paddleocr_ch_only.py
 *api/ppocr_onnx/ppocr/utils/e2e_utils/__pycache__/
 *api/yolo_detect.py
 *api/yolo_tflite.py
+.env
