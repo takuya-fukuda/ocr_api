@@ -33,26 +33,6 @@ VisionAPI はアルゴリズムの修正が必要
 python3.10.15
 Ubuntu20.04.06 LTS
 
-## アプリケーションルート
-
-| パス                        | 概要             |
-| --------------------------- | ---------------- |
-| http://publicIP:5000/       | ヘルスチェック用 |
-| http://publicIP:5000/image/ | 券面 OCR 用      |
-
-## POST リクエスト
-
-| body               | 型  |
-| ------------------ | --- |
-| 画像データ(base64) | ?   |
-
-## レスポンス
-
-| キー  | 型  | サンプル                      |
-| ----- | --- | ----------------------------- |
-| sum   | str | 800                           |
-| image | str | fa;jgiegjaj;alse**\*\***acdfe |
-
 ## 起動方法
 
 1.Window 上に WSL 経由で Ubuntu アプリをインストール
@@ -100,6 +80,19 @@ pip install -r requirements.txt
 python run.py
 ```
 
+## POST リクエスト
+
+| body               | 型  |
+| ------------------ | --- |
+| 画像データ(base64) | ?   |
+
+## レスポンス
+
+| キー  | 型  | サンプル                      |
+| ----- | --- | ----------------------------- |
+| sum   | str | 800                           |
+| image | str | fa;jgiegjaj;alse**\*\***acdfe |
+
 ## Flask フォルダ構成
 
 | filename           | description                                                                     |
@@ -111,6 +104,13 @@ python run.py
 | api/ocr.py         | /image/の全体処理が記載されたファイル。前処理 ⇒ 推論 ⇒ 後処理の原則に基づき記載 |
 | api/preparation.py | 前処理ファイル。ocr.py から参照される                                           |
 | api/postprocess.py | 後処理ファイル。ocr.py から参照される                                           |
+
+## アプリケーションルート
+
+| パス                        | 概要             |
+| --------------------------- | ---------------- |
+| http://publicIP:5000/       | ヘルスチェック用 |
+| http://publicIP:5000/image/ | 券面 OCR 用      |
 
 ## PaddleOCR のファインチューニング方法
 
