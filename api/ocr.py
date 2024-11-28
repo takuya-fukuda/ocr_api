@@ -3,8 +3,9 @@ import shutil
 from pathlib import Path
 from flask import jsonify
 from .preparation import load_image, extension_split, heic_convert
-from .postprocess import result_custom, extract_info_ja, draw_pre, draw_info
-from paddleocr import PaddleOCR
+from .postprocess import result_custom, search_word
+#from paddleocr import PaddleOCR
+from .yomitoku_ocr import get_analyzer, test_ocr
 from .error import handle_error
 
 basedir = Path(__file__).parent.parent
@@ -47,21 +48,13 @@ def ocr_func(request):
         return handle_error("前処理部分での想定外のエラー", img_path, result_save_path), 400
 
     '''
-    推論：PaddleOCRで推論
+    推論：yomitokuで推論
     '''
     try:
-        #使用するモデル定義
-        det_model = './api/model/det/ch_PP-OCRv3_det_infer.onnx'
-        rec_model = './api/model/rec/japan_PP-OCRv3_rec_infer.onnx'
-        cls_model = './api/model/cls/ch_ppocr_mobile_v2.0_cls_infer.onnx'
-        cpu_threads = 6
-        
-        #クラス定義
-        ocr = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads, use_onnx=True, det_model_dir=det_model, rec_model_dir=rec_model, cls_model_dir=cls_model)  # 日本語OCR
+        # Analyzerの初期化
+        analyzer = get_analyzer()
+        ocr_result = test_ocr(img_path, analyzer)
 
-        #推論
-        ocr_result = ocr.ocr(img_path)
-     
     except Exception as e:
         print(e)
         return handle_error("AI推論時の想定外のエラー", img_path, result_save_path), 400
@@ -71,19 +64,10 @@ def ocr_func(request):
     '''
     try:
         #抜きだしたい部分の抜き取り
-        result_ja = extract_info_ja(ocr_result)
-        print(result_ja['sum'])
+        result = search_word(ocr_result)
+        print(result['sum'])
 
-        #BBOX部分の座標整理
-        bbox_list = draw_pre(result_ja['total_amount_bbox'])
-
-        #bboxを引く処理
-        result_save_path = draw_info(img_path, bbox_list)
-
-        #結果を返す
-        result_data = result_custom(result_save_path, result_ja)
-
-        return jsonify(result_data)
+        return jsonify(result)
 
     except Exception as e:
         print(e)

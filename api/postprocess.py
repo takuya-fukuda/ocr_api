@@ -34,28 +34,21 @@ def replace_word(text):
     text = text.replace(',', '')
     return text
 
-def extract_info_ja(ocr_result):
+def search_word(ocr_result):
     total_amount = None
-    total_amount_bbox = None
     found_total_keyword = False
     found_partial_total_keyword = False
 
-    # for item, bbox in zip(rec_res, dt_boxes):
-    #     item = replace_word(item[0])
-    #     item = zenkaku_to_hankaku(item)
-    #     bbox = bbox
-    for line in ocr_result[0]:
-        item = line[1][0]
+    for line in ocr_result:
+        item = line['word']
         item = replace_word(item)
         item = zenkaku_to_hankaku(item)
-        bbox = line[0]
-
+        
         # 総合計の次の行の金額を抽出
         if found_total_keyword:
             total_match = re.search(r'(\d+)', item)
             if total_match:
                 total_amount = total_match.group(1)
-                total_amount_bbox = bbox
                 found_total_keyword = False  # 抽出が完了したらフラグをリセット
                 break
 
@@ -64,7 +57,6 @@ def extract_info_ja(ocr_result):
             total_match = re.search(r'(\d+)', item)
             if total_match:
                 total_amount = total_match.group(1)
-                total_amount_bbox = bbox
                 found_partial_total_keyword = False  # 抽出が完了したらフラグをリセット
                 break
 
@@ -77,45 +69,44 @@ def extract_info_ja(ocr_result):
             found_partial_total_keyword = True
 
     return {
-        'sum': total_amount,
-        'total_amount_bbox': total_amount_bbox,
+        'sum': total_amount
     }
 
 '''
 正規表現で目的のものを抜き出す処理終了（日本語用）
 '''
 
-def draw_pre(total_amount_bbox):
-    bbox_list = []
-    if total_amount_bbox is not None:
-        bbox_list.append(total_amount_bbox)
+# def draw_pre(total_amount_bbox):
+#     bbox_list = []
+#     if total_amount_bbox is not None:
+#         bbox_list.append(total_amount_bbox)
 
-    return bbox_list
+#     return bbox_list
 
-def draw_info(image_path, dt_boxes):
-    result_filename = os.path.basename(image_path)
-    image = cv2.imread(image_path)
-    for bbox in dt_boxes:
-        cv2.line(image, (int(bbox[0][0]), int(bbox[0][1])), (int(bbox[1][0]), int(bbox[1][1])), (0, 0, 255), 3)
-        cv2.line(image, (int(bbox[1][0]), int(bbox[1][1])), (int(bbox[2][0]), int(bbox[2][1])), (0, 0, 255), 3)
-        cv2.line(image, (int(bbox[2][0]), int(bbox[2][1])), (int(bbox[3][0]), int(bbox[3][1])), (0, 0, 255), 3)
-        cv2.line(image, (int(bbox[3][0]), int(bbox[3][1])), (int(bbox[0][0]), int(bbox[0][1])), (0, 0, 255), 3)
+# def draw_info(image_path, dt_boxes):
+#     result_filename = os.path.basename(image_path)
+#     image = cv2.imread(image_path)
+#     for bbox in dt_boxes:
+#         cv2.line(image, (int(bbox[0][0]), int(bbox[0][1])), (int(bbox[1][0]), int(bbox[1][1])), (0, 0, 255), 3)
+#         cv2.line(image, (int(bbox[1][0]), int(bbox[1][1])), (int(bbox[2][0]), int(bbox[2][1])), (0, 0, 255), 3)
+#         cv2.line(image, (int(bbox[2][0]), int(bbox[2][1])), (int(bbox[3][0]), int(bbox[3][1])), (0, 0, 255), 3)
+#         cv2.line(image, (int(bbox[3][0]), int(bbox[3][1])), (int(bbox[0][0]), int(bbox[0][1])), (0, 0, 255), 3)
 
-    result_dir = str(basedir / "data" / "result" )
-    os.makedirs(result_dir, exist_ok=True)
-    output_path = os.path.join(result_dir, result_filename)
-    cv2.imwrite(output_path, image)
-    return output_path
+#     result_dir = str(basedir / "data" / "result" )
+#     os.makedirs(result_dir, exist_ok=True)
+#     output_path = os.path.join(result_dir, result_filename)
+#     cv2.imwrite(output_path, image)
+#     return output_path
 
 def result_custom(result_save_path, result_ja):
     data = {}
     data['sum'] = result_ja['sum']
 
-    # 画像をBase64にエンコードしてdataに追加する
-    with open(result_save_path, "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+    # # 画像をBase64にエンコードしてdataに追加する
+    # with open(result_save_path, "rb") as image_file:
+    #     encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
 
-    data['image'] = encoded_string
+    # data['image'] = encoded_string
     
     return data
 

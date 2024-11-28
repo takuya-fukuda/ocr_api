@@ -11,3 +11,4 @@ onnxruntime
 pillow-heif
 paddlepaddle
 paddleocr
+yomitoku
