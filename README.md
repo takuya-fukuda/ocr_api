@@ -19,12 +19,14 @@ ocr_result_ja = ocr_ja.ocr(img_path)
 
 ## ブランチ
 
-| ブランチ名  | 概要                            |
-| ----------- | ------------------------------- |
-| main        | PaddleOCR で推論                |
-| onnxruntime | PaddleOCR を ONNXruntime で推論 |
-| visionapi   | visionAPI で推論                |
-| yomitoku    | yomitoku で推論                 |
+VisionAPI はアルゴリズムの修正が必要
+
+| ブランチ名  | 概要                                                           |
+| ----------- | -------------------------------------------------------------- |
+| main        | PaddleOCR で推論                                               |
+| onnxruntime | PaddleOCR を ONNXruntime で推論                                |
+| visionapi   | visionAPI で推論(ただしレスポンスに BBOX は付けず、値のみ返却) |
+| yomitoku    | yomitoku で推論(ただしレスポンスに BBOX は付けず、値のみ返却)  |
 
 ## 環境
 
