@@ -6,17 +6,25 @@
 
 ## 使用している AI モデル
 
-PaddleOCR の ONNX 変換モデル
+| モデル名                     |
+| ---------------------------- |
+| PaddleOCR の ONNX 変換モデル |
 
-今回は PaddelOCR パッケージで ONNX 推論。
-環境依存したくない場合は、onnxruntime ブランチを参照。
-
-推論用コード
+PaddleOCR 推論用コード
 
 ```
 ocr_ja = PaddleOCR(use_angle_cls=True, lang='japan', use_gpu=False, enable_mkldnn=True, cpu_threads=cpu_threads, use_onnx=True, det_model_dir=det_model, rec_model_dir=ja_rec_model, cls_model_dir=cls_model)
 ocr_result_ja = ocr_ja.ocr(img_path)
 ```
+
+## ブランチ
+
+| ブランチ名  | 概要                            |
+| ----------- | ------------------------------- |
+| main        | PaddleOCR で推論                |
+| onnxruntime | PaddleOCR を ONNXruntime で推論 |
+| visionapi   | visionAPI で推論                |
+| yomitoku    | yomitoku で推論                 |
 
 ## 環境
 
