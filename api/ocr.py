@@ -2,7 +2,7 @@ import os
 import shutil
 from pathlib import Path
 from flask import jsonify
-from .preparation import load_image, extension_split, heic_convert
+from .preprocess import PreProcess
 from .postprocess import result_custom, extract_info_ja, draw_pre, draw_info
 from paddleocr import PaddleOCR
 from .error import handle_error
@@ -18,30 +18,14 @@ def ocr_func(request):
     前処理
     '''
     try:
-        img_path, filename = load_image(request)
+        file = request.files['file'] #画像の受け取り
+        filename = file.filename
+        img_path = str(basedir / "data" / "input" /filename)
+        file.save(img_path)
 
-        #ファイル名チェック
-        if filename == '':
-            return jsonify('ファイル名が空です')
-        
-        # ファイルのロードに失敗した場合の処理
-        if img_path is None:
-            return jsonify({"message": 'ファイルが空です', "sum": "", "image": ""}), 400
-
-        # ファイル名チェック
-        if filename == '' or filename is None:
-            return jsonify({"message": 'ファイル名が空です', "sum": "", "image": ""}), 400
-   
-        #拡張子チェック
-        ext = extension_split(img_path)
-        if ext.lower() not in [".jpeg", ".jpg", ".png", ".heic"]:
-            return jsonify({"message": 'AIがファイル拡張子に対応していません', "sum": "", "image": ""}), 400
-
-        #HEICのJPEG変換
-        if ext == ".HEIC":
-            img_path = heic_convert(img_path)
-            
-
+        #前処理
+        pre_process = PreProcess(img_path)
+        img_path = pre_process.preprocess_default()
     except Exception as e:
         print(e)
         return handle_error("前処理部分での想定外のエラー", img_path, result_save_path), 400
