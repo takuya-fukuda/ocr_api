@@ -12,7 +12,7 @@ api = Blueprint("api", __name__)
 def index():
     return "test"
 
-#YOLO実行関数
+#OCR用アプリケーションルート
 @api.route('/image', methods=["POST"])
 def prepare():
     return ocr.ocr_func(request)
