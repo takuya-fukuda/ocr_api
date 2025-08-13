@@ -28,7 +28,7 @@ def ocr_func(request):
         img_path = pre_process.preprocess_default()
     except Exception as e:
         print(e)
-        return handle_error("前処理部分での想定外のエラー", img_path, result_save_path), 400
+        return handle_error("前処理部分での想定外のエラー" + str(e), img_path, result_save_path), 400
 
     '''
     推論：PaddleOCRで推論
